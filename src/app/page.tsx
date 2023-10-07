@@ -15,8 +15,8 @@ function StopwatchCard() {
   const [laps, setLaps] = useState([]);
 
   return (
-    <div className="inline-block md:bg-gray-800 md:p-10 p-6">
-      <div className=" md:px-4 md:pb-4">
+    <div className="inline-block md:bg-gray-800 md:px-10 p-6">
+      <div className="md:pb-4">
         <Time isRunning={isRunning} time={time} onNewTime={setTime} />
 
         <div className="text-xl">
