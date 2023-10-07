@@ -20,11 +20,31 @@ function StopwatchCard() {
         <Time isRunning={isRunning} time={time} onNewTime={setTime} />
 
         <div className="text-xl">
-          <ActionButton disabled={!isRunning}>Lap</ActionButton>
+          <ActionButton
+            disabled={!isRunning}
+            onClick={() => {
+              setLaps([
+                {
+                  number: laps.length + 1,
+                  time: time - (laps[0] || { total: 0 }).total,
+                  total: time,
+                },
+                ...laps,
+              ]);
+            }}
+          >
+            Lap
+          </ActionButton>
           <ActionButton onClick={() => setIsRunning(!isRunning)}>
             {isRunning ? "Stop" : "Run"}
           </ActionButton>
-          <ActionButton disabled={isRunning} onClick={() => setTime(0)}>
+          <ActionButton
+            disabled={isRunning}
+            onClick={() => {
+              setTime(0);
+              setLaps([]);
+            }}
+          >
             Reset
           </ActionButton>
         </div>
@@ -35,7 +55,6 @@ function StopwatchCard() {
 }
 
 function Time({ time, onNewTime, isRunning }) {
-  const { hours, seconds, minutes, milliseconds } = formattedTimeObject(time);
   const [currentInterval, setCurrentInterval] = useState(null);
 
   if (isRunning && currentInterval === null) {
@@ -52,9 +71,28 @@ function Time({ time, onNewTime, isRunning }) {
 
   return (
     <div className="mb-4">
-      <span className="text-8xl">{`${hours}:${minutes}:${seconds}`}</span>
-      <span className="text-4xl">{`.${milliseconds}`}</span>
+      <FormattedTime
+        time={time}
+        hourMinuteSecondFontSize="text-8xl"
+        millisecondFontSize="text-4xl"
+      />
     </div>
+  );
+}
+
+function FormattedTime({
+  time,
+  hourMinuteSecondFontSize,
+  millisecondFontSize,
+}) {
+  const { hours, minutes, seconds, milliseconds } = formattedTimeObject(time);
+  return (
+    <>
+      <span
+        className={hourMinuteSecondFontSize}
+      >{`${hours}:${minutes}:${seconds}`}</span>
+      <span className={millisecondFontSize}>{`.${milliseconds}`}</span>
+    </>
   );
 }
 
@@ -88,7 +126,7 @@ function ActionButton(props) {
 
 function Laps({ laps }) {
   return (
-    <table className="w-full text-right">
+    <table className="w-full text-right text-xl">
       <thead>
         <tr>
           <th className="text-left">Lap #</th>
@@ -101,8 +139,20 @@ function Laps({ laps }) {
           return (
             <tr key={lap.number}>
               <td className="text-left">{lap.number}</td>
-              <td>{lap.time}</td>
-              <td>{lap.total}</td>
+              <td>
+                <FormattedTime
+                  time={lap.time}
+                  hourMinuteSecondFontSize="text-xl"
+                  millisecondFontSize="text-base"
+                />
+              </td>
+              <td>
+                <FormattedTime
+                  time={lap.total}
+                  hourMinuteSecondFontSize="text-xl"
+                  millisecondFontSize="text-base"
+                />
+              </td>
             </tr>
           );
         })}
