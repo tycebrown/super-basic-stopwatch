@@ -125,6 +125,9 @@ function ActionButton(props) {
 }
 
 function Laps({ laps }) {
+  if (laps.length === 0) {
+    return <></>;
+  }
   return (
     <table className="w-full text-right text-xl">
       <thead>
