@@ -20,11 +20,13 @@ function StopwatchCard() {
         <Time isRunning={isRunning} time={time} onNewTime={setTime} />
 
         <div className="text-xl">
-          <ActionButton enabled={isRunning}>Lap</ActionButton>
-          <ActionButton enabled={true} onClick={() => setIsRunning(!isRunning)}>
+          <ActionButton disabled={!isRunning}>Lap</ActionButton>
+          <ActionButton onClick={() => setIsRunning(!isRunning)}>
             {isRunning ? "Stop" : "Run"}
           </ActionButton>
-          <ActionButton enabled={!isRunning}>Reset</ActionButton>
+          <ActionButton disabled={isRunning} onClick={() => setTime(0)}>
+            Reset
+          </ActionButton>
         </div>
       </div>
       <Laps laps={laps} />
@@ -73,7 +75,7 @@ function formattedTimeObject(time) {
 function ActionButton(props) {
   return (
     <button
-      disabled={!props.enabled}
+      disabled={props.disabled}
       onClick={props.onClick}
       className={
         "rounded mx-4 disabled:text-gray-500 bg-gray-500 disabled:bg-gray-600 hover:bg-gray-400 active:bg-gray-300 w-24"
