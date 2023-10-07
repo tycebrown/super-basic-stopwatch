@@ -15,8 +15,8 @@ function StopwatchCard() {
   const [laps, setLaps] = useState([]);
 
   return (
-    <div className="inline-block bg-gray-800 p-14">
-      <div className="bg-gray-700 px-4 pb-4 mb-14">
+    <div className="inline-block md:bg-gray-800 md:p-10 p-6">
+      <div className=" md:px-4 md:pb-4">
         <Time isRunning={isRunning} time={time} onNewTime={setTime} />
 
         <div className="text-xl">
@@ -26,7 +26,7 @@ function StopwatchCard() {
               setLaps([
                 {
                   number: laps.length + 1,
-                  time: time - (laps[0] || { total: 0 }).total,
+                  time: time - laps[0]?.total || 0,
                   total: time,
                 },
                 ...laps,
@@ -87,12 +87,17 @@ function FormattedTime({
 }) {
   const { hours, minutes, seconds, milliseconds } = formattedTimeObject(time);
   return (
-    <>
+    <span className="text-center">
+      {
+        <span
+          className={`${hourMinuteSecondFontSize} md:inline hidden`}
+        >{`${hours}:`}</span>
+      }
       <span
         className={hourMinuteSecondFontSize}
-      >{`${hours}:${minutes}:${seconds}`}</span>
+      >{`${minutes}:${seconds}`}</span>
       <span className={millisecondFontSize}>{`.${milliseconds}`}</span>
-    </>
+    </span>
   );
 }
 
@@ -116,7 +121,7 @@ function ActionButton(props) {
       disabled={props.disabled}
       onClick={props.onClick}
       className={
-        "rounded mx-4 disabled:text-gray-500 bg-gray-500 disabled:bg-gray-600 hover:bg-gray-400 active:bg-gray-300 w-24"
+        "rounded mx-4 disabled:text-gray-400 bg-gray-500 disabled:bg-gray-600 hover:bg-gray-400 active:bg-gray-300 w-20 md:w-24"
       }
     >
       {props.children}
@@ -128,8 +133,9 @@ function Laps({ laps }) {
   if (laps.length === 0) {
     return <></>;
   }
+
   return (
-    <table className="w-full text-right text-xl">
+    <table className="w-full text-right text-xl mt-14">
       <thead>
         <tr>
           <th className="text-left">Lap #</th>
