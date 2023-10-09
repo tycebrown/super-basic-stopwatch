@@ -1,26 +1,54 @@
 "use client";
-import React, { useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { FormattedTime } from "./FormattedTime";
 import { ActionButton } from "./ActionButton";
 import { Laps } from "./Laps";
 
-export function StopwatchCard() {
-  const [isRunning, setIsRunning] = useState(false);
-  const [time, setTime] = useState(0);
-  const [laps, setLaps] = useState([]);
-  const [currentInterval, setCurrentInterval] = useState(null);
+const TickerContext = createContext(null);
 
-  if (isRunning && currentInterval === null) {
+export function Stopwatch() {
+  return (
+    <StopwatchTickerProvider>
+      <StopwatchCard />
+    </StopwatchTickerProvider>
+  );
+}
+
+function StopwatchTickerProvider(props) {
+  const [time, setTime] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+  const [currentUpdateInterval, setCurrentUpdateInterval] = useState(null);
+
+  if (isRunning && currentUpdateInterval === null) {
     var start = Date.now();
-    setCurrentInterval(
+    setCurrentUpdateInterval(
       setInterval(() => {
         setTime(time + Date.now() - start);
       }, 10)
     );
-  } else if (!isRunning && currentInterval !== null) {
-    clearInterval(currentInterval);
-    setCurrentInterval(null);
+  } else if (!isRunning && currentUpdateInterval !== null) {
+    clearInterval(currentUpdateInterval);
+    setCurrentUpdateInterval(null);
   }
+
+  const ticker = {
+    state: { time, isRunning },
+    actions: { setTime, setIsRunning },
+  };
+
+  return (
+    <TickerContext.Provider value={ticker}>
+      {props.children}
+    </TickerContext.Provider>
+  );
+}
+
+function StopwatchCard() {
+  const [laps, setLaps] = useState([]);
+  const {
+    state: { isRunning, time },
+    actions: { setIsRunning, setTime },
+  } = useContext(TickerContext);
 
   return (
     <div className="inline-block md:bg-gray-800 md:px-10 p-6">
@@ -37,7 +65,7 @@ export function StopwatchCard() {
             setLaps([
               {
                 number: laps.length + 1,
-                time: time - laps[0]?.total || 0,
+                time: time - (laps[0]?.total || 0),
                 total: time,
               },
               ...laps,

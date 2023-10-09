@@ -6,23 +6,24 @@ export function FormattedTime({
   hourMinuteSecondFontSize,
   millisecondFontSize,
 }) {
-  const { hours, minutes, seconds, milliseconds } = formattedTimeObject(time);
+  const { hours, minutes, seconds, milliseconds } =
+    getFormattedTimeObject(time);
   return (
-    <span className="text-center">
-      {
-        <span
-          className={`${hourMinuteSecondFontSize} md:inline hidden`}
-        >{`${hours}:`}</span>
-      }
+    // hide the hours text when the screen is too small to hold it,
+    // and make the milliseconds smaller than the rest of the time
+    <>
+      <span
+        className={`${hourMinuteSecondFontSize} md:inline hidden`}
+      >{`${hours}:`}</span>
       <span
         className={hourMinuteSecondFontSize}
       >{`${minutes}:${seconds}`}</span>
       <span className={millisecondFontSize}>{`.${milliseconds}`}</span>
-    </span>
+    </>
   );
 }
 
-function formattedTimeObject(time) {
+function getFormattedTimeObject(time) {
   const hours = Math.trunc(time / 1000 / 60 / 60);
   const minutes = Math.trunc((time % (1000 * 60 * 60)) / 1000 / 60);
   const seconds = Math.trunc((time % (1000 * 60)) / 1000);
