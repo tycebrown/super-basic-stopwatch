@@ -10,9 +10,9 @@ users = [
     (5, "tom"),
 ];
 
-@api_bp.route("/<id>")
+@api_bp.route("/<int:id>")
 def findUserName(id):
-    user = next(filter(lambda user: user[0] == int(id), users), None)
+    user = next(filter(lambda user: user[0] == id, users), None)
     if user:
         return user[1];
     else:

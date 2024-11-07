@@ -3,18 +3,20 @@
     <script>
         function findUser(formEvent) {
             const id = new FormData(formEvent).get('id')
-            fetch(`/api/user/${id}`).then((res) => {
-                const userNameElement = document.getElementById("userName");
-                userNameElement.innerText = res.ok ? res.body : res.statusText;
+            console.log(id)
+            fetch(`/api/user/${id}`).then(async (res) => {
+                const messageElement = document.getElementById("message");
+                messageElement.innerText = res.ok ? await res.text() : res.statusText;
             })
+            return false;
         }
     </script>
 </head>
 <body>
-    <form onsubmit="findUser(); return false;">
+    <form onsubmit="return findUser(this)">
         <div>Enter a user id:</div>
-        <input type="text" name="id"/> <button type="submit">Find user</button>
+        <input type="text" name="id"> <button type="submit">Find user</button>
     </form>
-    <div id="userName"></div>
+    <div id="message"></div>
 </body>
 </html>
