@@ -1,0 +1,20 @@
+<html>
+<head>
+    <script>
+        function findUser(formEvent) {
+            const id = new FormData(formEvent).get('id')
+            fetch(`/api/user/${id}`).then((res) => {
+                const userNameElement = document.getElementById("userName");
+                userNameElement.innerText = res.ok ? res.body : res.statusText;
+            })
+        }
+    </script>
+</head>
+<body>
+    <form onsubmit="findUser(); return false;">
+        <div>Enter a user id:</div>
+        <input type="text" name="id"/> <button type="submit">Find user</button>
+    </form>
+    <div id="userName"></div>
+</body>
+</html>
