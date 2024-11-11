@@ -5,7 +5,10 @@
             const id = new FormData(formEvent).get('id');
             fetch(`/api/user/${id}`).then(async (res) => {
                 const messageElement = document.getElementById("message");
-                messageElement.replaceChildren(res.ok ? await res.text() : res.statusText);
+                messageElement.replaceChildren(
+                    res.ok 
+                        ? await res.text() 
+                        : (res.status === 404 ? "User not found" : `Error: ${res.status}`));
             })
             return false;
         }
